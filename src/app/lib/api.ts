@@ -15,6 +15,18 @@ export async function fetchMovies(searchText: string): Promise<Movie[]> {
   return response.json();
 }
 
+export async function fetchMovieDetails(id: string): Promise<Movie> {
+  const response = await fetch(`${API_BASE_URL}/api/movies/${id}`, {
+    next: { revalidate: 3600 } // Revalidate every hour
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch movie details');
+  }
+
+  return response.json();
+}
+
 export async function fetchPeople(searchText: string): Promise<Person[]> {
   const response = await fetch(`${API_BASE_URL}/api/people?q=${encodeURIComponent(searchText)}`, {
     next: { revalidate: 3600 } // Revalidate every hour
