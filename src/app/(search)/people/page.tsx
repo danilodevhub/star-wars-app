@@ -1,7 +1,6 @@
 import { fetchPeople } from '@/app/lib/api';
 import ResultsLayout from '@/app/components/ResultsLayout';
 import EmptyState from '@/app/components/EmptyState';
-import PersonListItem from '@/app/components/ListItem';
 import ListItem from '@/app/components/ListItem';
 
 interface Person {
