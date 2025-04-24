@@ -1,4 +1,4 @@
-import SearchForm from './components/SearchForm';
+import SuspendedSearchForm from './components/SuspendedSearchForm';
 import ResultsLayout from './components/ResultsLayout';
 import EmptyState from './components/EmptyState';
 
@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <>
       {/* Left Container - Search Form */}
-      <SearchForm />
+      <SuspendedSearchForm />
 
       {/* Right Container - Empty State */}
       <ResultsLayout>

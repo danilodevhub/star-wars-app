@@ -1,4 +1,4 @@
-import SearchForm from '@/app/components/SearchForm';
+import SuspendedSearchForm from '@/app/components/SuspendedSearchForm';
 
 export default function SearchLayout({
   children,
@@ -8,7 +8,7 @@ export default function SearchLayout({
   return (
     <>
       {/* Left Container - Search Form */}
-      <SearchForm />
+      <SuspendedSearchForm />
 
       {/* Right Container - Results */}
       {children}

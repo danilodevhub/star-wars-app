@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { NextRequest, NextResponse } from 'next/server';
 
 const mockPerson = {
   name: "Bib Fortuna",
@@ -14,11 +15,10 @@ const mockPerson = {
 };
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest
 ) {
   // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 3000));
-
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
   return NextResponse.json(mockPerson);
 } 
