@@ -8,7 +8,8 @@ export default function SearchButton({ variant, onClick }: SearchButtonProps) {
   
   const variantClasses = {
     disabled: "border border-[var(--pinkish-grey)] bg-[var(--pinkish-grey)] cursor-not-allowed",
-    enabled: "border border-[var(--green-teal)] bg-[var(--green-teal)] cursor-pointer hover:bg-[var(--emerald)] hover:border-[var(--emerald)] transition-colors"
+    enabled: "border border-[var(--green-teal)] bg-[var(--green-teal)] cursor-pointer hover:bg-[var(--emerald)] hover:border-[var(--emerald)] transition-colors",
+    searching: "border border-[var(--green-teal)] bg-[var(--green-teal)] cursor-not-allowed"
   };
 
   return (
@@ -16,7 +17,7 @@ export default function SearchButton({ variant, onClick }: SearchButtonProps) {
       type="submit"
       disabled={variant === 'disabled' || variant === 'searching'}
       onClick={onClick}
-      className={`${baseClasses} ${variantClasses[variant === 'searching' ? 'enabled' : variant]}`}
+      className={`${baseClasses} ${variantClasses[variant]}`}
     >
       {variant === 'searching' ? 'SEARCHING...' : 'SEARCH'}
     </button>
