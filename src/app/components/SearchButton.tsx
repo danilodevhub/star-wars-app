@@ -8,7 +8,7 @@ export default function SearchButton({ variant, onClick }: SearchButtonProps) {
   
   const variantClasses = {
     disabled: "border border-[var(--pinkish-grey)] bg-[var(--pinkish-grey)] cursor-not-allowed",
-    enabled: "border border-[var(--green-teal)] bg-[var(--green-teal)] cursor-pointer hover:opacity-90 transition-opacity"
+    enabled: "border border-[var(--green-teal)] bg-[var(--green-teal)] cursor-pointer hover:bg-[var(--emerald)] hover:border-[var(--emerald)] transition-colors"
   };
 
   return (
