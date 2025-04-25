@@ -44,7 +44,7 @@ export interface SwapiPersonProperties {
   height?: string;
   mass?: string;
   films?: string[];
-  [key: string]: any;
+  [key: string]: string | string[] | undefined;
 }
 
 export interface SwapiPerson {
@@ -61,7 +61,7 @@ export interface SwapiMovieProperties {
   director?: string;
   opening_crawl?: string;
   characters?: string[];
-  [key: string]: any;
+  [key: string]: string | string[] | undefined;
 }
 
 export interface SwapiMovie {
@@ -73,13 +73,13 @@ export interface SwapiMovie {
 }
 
 // Cache object to store API responses with timestamps
-const cache: Record<string, { data: any; timestamp: number }> = {};
+const cache: Record<string, { data: SwapiResponse<SwapiPerson | SwapiMovie>; timestamp: number }> = {};
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 /**
  * Fetches data from the SWAPI API with error handling
  */
-async function fetchWithErrorHandling<T>(
+async function fetchWithErrorHandling<T extends SwapiResponse<SwapiPerson | SwapiMovie>>(
   endpoint: string,
   resourceType: string
 ): Promise<T> {
@@ -87,6 +87,12 @@ async function fetchWithErrorHandling<T>(
   const requestId = trackRequestStart(url, `swapi-${resourceType}`);
   
   try {
+    // Check cache first
+    const cached = cache[url];
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      return cached.data as T;
+    }
+
     const response = await fetch(url, {
       headers: {
         'Accept': 'application/json'
@@ -97,15 +103,20 @@ async function fetchWithErrorHandling<T>(
       trackRequestEnd(requestId, response.status, false);
       throw new Error(`Failed to fetch ${resourceType}: ${response.status} ${response.statusText}`);
     }
-    
+
     const data = await response.json() as T;
-    trackRequestEnd(requestId, response.status, true);
     
+    // Cache the response
+    cache[url] = {
+      data,
+      timestamp: Date.now()
+    };
+    
+    trackRequestEnd(requestId, response.status, true);
     return data;
   } catch (error) {
     logger.error(`Error fetching ${resourceType}:`, error);
-    // Ensure we track failed requests with status 0 if not tracked yet
-    trackRequestEnd(requestId, 0, false);
+    trackRequestEnd(requestId, error instanceof Error && 'status' in error ? (error as Error & { status: number }).status : 0, false);
     throw error;
   }
 }
@@ -122,7 +133,7 @@ async function fetchFromUrl<T>(url: string, resourceType: string): Promise<T> {
   // Return cached data if it exists and is not expired
   if (cachedItem && now - cachedItem.timestamp < CACHE_DURATION) {
     logger.debug(`Using cached data for: ${url}`);
-    return cachedItem.data;
+    return cachedItem.data as T;
   }
   
   const requestId = trackRequestStart(url, `swapi-url-${resourceType}`);
@@ -156,7 +167,7 @@ async function fetchFromUrl<T>(url: string, resourceType: string): Promise<T> {
     }
     
     // Cache the response
-    cache[cacheKey] = { data, timestamp: now };
+    cache[cacheKey] = { data: data as SwapiResponse<SwapiPerson | SwapiMovie>, timestamp: now };
     
     return data;
   } catch (error) {

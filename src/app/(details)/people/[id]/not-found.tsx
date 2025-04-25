@@ -6,7 +6,7 @@ export default function PersonNotFound() {
       <h1 className="text-[24px] font-[700] mb-[15px] text-center">Character Not Found</h1>
       
       <p className="text-[16px] mb-[30px] text-center">
-        The Star Wars character you're looking for could not be found.
+        The Star Wars character you&apos;re looking for could not be found.
         <br />
         It might be from a galaxy far, far away...
       </p>

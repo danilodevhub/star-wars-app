@@ -19,7 +19,7 @@ export default async function PeoplePage({ searchParams }: SearchParams) {
   // Fetch people data with error handling
   let people: Person[] = [];
   try {
-    people = await fetchPeople(query);
+    people = await fetchPeople(query) as Person[];
   } catch (fetchError) {
     logger.error('Failed to fetch people', fetchError);
     return (

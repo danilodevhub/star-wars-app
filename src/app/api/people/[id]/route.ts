@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest, NextResponse } from 'next/server';
 import swapiClient, { SwapiResponse, SwapiPerson, SwapiMovie } from '@/app/lib/swapi-client';
 import { createLogger } from '@/app/lib/logger';

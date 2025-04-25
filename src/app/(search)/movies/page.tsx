@@ -20,7 +20,7 @@ export default async function MoviesPage({ searchParams }: SearchParams) {
   // Fetch movies data with error handling
   let movies: Movie[] = [];
   try {
-    movies = await fetchMovies(query);
+    movies = await fetchMovies(query) as Movie[];
   } catch (fetchError) {
     logger.error('Failed to fetch movies', fetchError);
     return (

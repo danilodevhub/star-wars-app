@@ -5,6 +5,7 @@ import { ApiError } from '@/app/lib/swapi-client';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { createLogger } from '@/app/lib/logger';
+import { Person } from '@/app/types/person';
 
 // Create a logger for this page
 const logger = createLogger('PersonDetails');
@@ -23,7 +24,7 @@ export default async function PersonDetailsPage({ params }: PageProps) {
   try {
     logger.debug(`Loading person details: ${id}`);
     
-    const person = await fetchPersonDetails(id);
+    const person = await fetchPersonDetails(id) as Person;
 
     return (
       <div className="w-[804px] max-h-[537px] mx-auto p-[30px] bg-[#ffffff] rounded-[4px] shadow-[0_1px_2px_0_var(--warm-grey-75)] border border-[var(--gainsboro)] overflow-auto flex flex-col">
@@ -44,7 +45,7 @@ export default async function PersonDetailsPage({ params }: PageProps) {
             <h2 className="text-[18px] font-[700] mb-[15px] border-b border-[var(--gainsboro)] pb-[5px]">Movies</h2>
             {person.films && person.films.length > 0 ? (
               <div>
-                {person.films.map((film) => (
+                {person.films.map((film: { uid: string; title: string }) => (
                   <Link 
                     key={film.uid}
                     href={`/movies/${film.uid}`}

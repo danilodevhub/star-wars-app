@@ -10,7 +10,7 @@ const logger = createLogger('ApiErrorBoundary');
 interface ApiErrorBoundaryProps {
   children: ReactNode;
   fallback?: ReactNode | (({ onRetry, onGoHome }: { onRetry?: () => void; onGoHome?: () => void }) => ReactNode);
-  resetKey?: any;
+  resetKey?: string | number;
 }
 
 export default function ApiErrorBoundary({ 
@@ -60,7 +60,7 @@ export default function ApiErrorBoundary({
 
   if (hasError) {
     return typeof fallback === 'function' 
-      ? (fallback as any)({ onRetry: handleRetry, onGoHome: handleGoHome })
+      ? fallback({ onRetry: handleRetry, onGoHome: handleGoHome })
       : fallback;
   }
 
@@ -78,7 +78,7 @@ function DefaultErrorFallback({
     <div className="w-full max-w-[800px] h-[400px] bg-[#ffffff] p-[30px] rounded-[4px] shadow-[0_1px_2px_0_var(--warm-grey-75)] border border-[var(--gainsboro)] flex flex-col items-center justify-center">
       <h2 className="text-[24px] font-[700] mb-[20px] text-[#383838]">Something went wrong</h2>
       <p className="text-[16px] mb-[30px] text-center">
-        We couldn't fetch the data from the Star Wars API.
+        We couldn&apos;t fetch the data from the Star Wars API.
         <br />
         Please try again or go back to the home page.
       </p>

@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     logger.debug(`Processing ${results.length} results: ${
       results.length > 0 ? JSON.stringify(results[0]).slice(0, 300) : 'No results'}`);
     
-    const movies = results.map((movie: any, index: number) => { 
+    const movies = results.map((movie: SwapiMovie, index: number) => { 
       logger.debug(`Processing movie item ${index}: ${JSON.stringify(movie).slice(0, 300)}`);      
       
       return {

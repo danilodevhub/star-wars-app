@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import BackToSearchButton from '@/app/components/BackToSearchButton';
 
 export default function MovieDetailsError({
   error,
@@ -23,9 +22,9 @@ export default function MovieDetailsError({
       <h1 className="text-[24px] font-[700] mb-[15px] text-center">Error Loading Movie Details</h1>
       
       <p className="text-[16px] mb-[30px] text-center">
-        We couldn't fetch the details for this movie from the Star Wars API.
+        We couldn&apos;t fetch the details for this movie from the Star Wars API.
         <br />
-        This might be because the movie doesn't exist or the API is temporarily unavailable.
+        This might be because the movie doesn&apos;t exist or the API is temporarily unavailable.
       </p>
       
       <div className="flex gap-[20px] mb-[30px]">

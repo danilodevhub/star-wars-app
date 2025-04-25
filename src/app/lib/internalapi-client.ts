@@ -11,7 +11,7 @@ const logger = createLogger('API');
 // For debugging URL issues
 const logApiRequest = (url: string, context: string) => {
   if (API_CONFIG.isDev) {
-    logger.debug(`API Request: ${url}`);
+    logger.debug(`API Request [${context}]: ${url}`);
   }
 };
 

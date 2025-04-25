@@ -4,6 +4,7 @@ import { ApiError } from '@/app/lib/swapi-client';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { createLogger } from '@/app/lib/logger';
+import { Movie } from '@/app/types/movie';
 
 // Create a logger for this page
 const logger = createLogger('MovieDetails');
@@ -20,7 +21,7 @@ export default async function MovieDetailsPage({ params }: PageProps) {
   try {
     logger.debug(`Loading movie details: ${id}`);
     
-    const movie = await fetchMovieDetails(id);
+    const movie = await fetchMovieDetails(id) as Movie;
 
     return (
       <div className="w-[804px] max-h-[537px] mx-auto p-[30px] bg-[#ffffff] rounded-[4px] shadow-[0_1px_2px_0_var(--warm-grey-75)] border border-[var(--gainsboro)] overflow-auto flex flex-col">
@@ -39,7 +40,7 @@ export default async function MovieDetailsPage({ params }: PageProps) {
             <div className="text-[14px]">
               {movie.characters.length > 0 ? (
                 <div className="flex flex-wrap gap-1">
-                  {movie.characters.map((character, index) => (
+                  {movie.characters.map((character: { uid: string; name: string }, index: number) => (
                     <span key={character.uid}>
                       <Link
                         href={`/people/${character.uid}`}
