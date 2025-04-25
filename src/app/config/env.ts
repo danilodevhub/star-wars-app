@@ -6,7 +6,7 @@
 // API configurations with defaults
 export const API_CONFIG = {
   // Base URL for calling our own API endpoints
-  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || '',
+  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000',
   
   // Base URL for SWAPI (used by our backend)
   swapiUrl: process.env.SWAPI_BASE_URL || 'https://swapi.tech/api',
