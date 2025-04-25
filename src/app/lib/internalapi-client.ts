@@ -8,6 +8,7 @@ import { measurePerformance } from '@/app/lib/performance';
 // Create logger for this module
 const logger = createLogger('API');
 
+const BATH_PATH = '/api/v1';
 // For debugging URL issues
 const logApiRequest = (url: string, context: string) => {
   if (API_CONFIG.isDev) {
@@ -80,7 +81,7 @@ export const fetchMovies = measurePerformance(
       
       // Call our local API instead of SWAPI directly
       const encodedQuery = encodeURIComponent(searchText);
-      const path = `api/movies?q=${encodedQuery}`;
+      const path = `${BATH_PATH}/movies?q=${encodedQuery}`;
       
       const movies = await fetchWithErrorHandling<Movie[]>(path, 'fetchMovies');
       return movies;
@@ -104,7 +105,7 @@ export const fetchMovieDetails = measurePerformance(
     
     // Ensure ID is properly encoded
     const safeId = encodeURIComponent(id);
-    const path = `api/movies/${safeId}`;
+    const path = `${BATH_PATH}/movies/${safeId}`;
     
     try {
       const movie = await fetchWithErrorHandling<Movie>(path, 'fetchMovieDetails');
@@ -137,7 +138,7 @@ export const fetchPeople = measurePerformance(
       
       // Call our local API instead of SWAPI directly
       const encodedQuery = encodeURIComponent(searchText);
-      const path = `api/people?q=${encodedQuery}`;
+      const path = `${BATH_PATH}/people?q=${encodedQuery}`;
       
       const people = await fetchWithErrorHandling<Person[]>(path, 'fetchPeople');
       return people;
@@ -161,7 +162,7 @@ export const fetchPersonDetails = measurePerformance(
     
     // Ensure ID is properly encoded
     const safeId = encodeURIComponent(id);
-    const path = `api/people/${safeId}`;
+    const path = `${BATH_PATH}/people/${safeId}`;
     
     try {
       const person = await fetchWithErrorHandling<Person>(path, 'fetchPersonDetails');

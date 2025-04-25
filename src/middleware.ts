@@ -5,12 +5,6 @@ import { createLogger } from '@/app/lib/logger';
 // Create a logger for middleware operations
 const logger = createLogger('Middleware');
 
-// API paths that should be cached more aggressively
-const STATIC_PATHS = [
-  '/api/people/', 
-  '/api/movies/'
-];
-
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   
@@ -26,8 +20,7 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith('/api/')) {
     // Log API requests in development to help with debugging    
     logger.debug(`API Request: ${request.method} ${request.nextUrl.toString()}`);
-    
-    
+
     // Ensure the URL is valid
     try {
       // Test if the URL is valid by reconstructing it
@@ -41,15 +34,7 @@ export async function middleware(request: NextRequest) {
     }
     
     // Set default cache headers for all API routes
-    response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
-    
-    // For specific resources by ID (e.g., /api/people/1, /api/movies/3), cache longer
-    const pathParts = pathname.split('/').filter(Boolean);
-    const hasIdParam = pathParts.length >= 3 && !isNaN(Number(pathParts[2]));
-    
-    if (STATIC_PATHS.some(path => pathname.startsWith(path)) && hasIdParam) {
-      response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
-    }
+    response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');    
   }
   
   return response;
@@ -58,7 +43,7 @@ export async function middleware(request: NextRequest) {
 // Apply middleware to API routes and pages using Star Wars data
 export const config = {
   matcher: [
-    '/api/:path*',
+    '/api/v1/:path*',
     '/(search)/:path*',
     '/(details)/:path*'
   ],
