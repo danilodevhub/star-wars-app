@@ -65,24 +65,42 @@ docker-compose up --build
 docker-compose -f docker-compose.yml up --build
 ```
 
+3. Get Redis Records:
+
+Usefull for troubleshooting the statistics
+
+```bash
+# Get all keys
+docker exec star-wars-app-redis-1 redis-cli KEYS "*"
+
+# Get a specific key
+docker exec star-wars-app-redis-1 redis-cli HGETALL "search:*"
+
+# Get top queries
+docker exec star-wars-app-redis-1 redis-cli ZRANGE search:queries 0 -1 WITHSCORES
+
+# Get hourly stats
+docker exec star-wars-app-redis-1 redis-cli ZRANGE search:hourly 0 -1 WITHSCORES
+```
+
 The application will be available at [http://localhost:3000](http://localhost:3000)
 
 ## Environment Configuration
 
 The project uses environment variables for configuration. Create a `.env.local` file for local development or use the provided `.env.production` for production deployment.
 
+## Pending work
+
+- [ ] Implement event-driven approach to compute statistics
+- [ ] Implement the endpoint to return the statistics
+
 ## Future Improvements
 
 - [ ] Add authentication system
 - [ ] Implement caching for API responses
 - [ ] Add unit and integration tests
-- [ ] Implement CI/CD pipeline
-- [ ] Add more interactive features
-- [ ] Implement offline support with PWA
-- [ ] Add dark mode support
-- [ ] Implement internationalization (i18n)
-- [ ] Add more detailed character and planet information
-- [ ] Implement search functionality
+- [ ] Implement pagination
+- [ ] It should be production ready (fix Redis issues for prod env)
 
 ## Contributing
 

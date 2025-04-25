@@ -8,7 +8,8 @@
  */
 export const debug = (context: string, message: string, ...args: unknown[]): void => {
   if (process.env.NODE_ENV === 'development') {
-    console.log(`[${context}] ${message}`, ...args);
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] [${context}] ${message}`, ...args);
   }
 };
 
@@ -16,14 +17,27 @@ export const debug = (context: string, message: string, ...args: unknown[]): voi
  * Log an error (these will show in all environments but can be filtered)
  */
 export const error = (context: string, message: string, error?: unknown): void => {
-  console.error(`[${context}] ${message}`, error || '');
+  const timestamp = new Date().toISOString();
+  console.error(`[${timestamp}] [${context}] ${message}`);
+  if (error) {
+    if (error instanceof Error) {
+      console.error(`[${timestamp}] [${context}] Error details:`, {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+    } else {
+      console.error(`[${timestamp}] [${context}] Error details:`, error);
+    }
+  }
 };
 
 /**
  * Log a warning (these will show in all environments but can be filtered)
  */
 export const warn = (context: string, message: string, ...args: unknown[]): void => {
-  console.warn(`[${context}] ${message}`, ...args);
+  const timestamp = new Date().toISOString();
+  console.warn(`[${timestamp}] [${context}] ${message}`, ...args);
 };
 
 /**

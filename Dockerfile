@@ -14,8 +14,15 @@ COPY . .
 # Build the application
 RUN npm run build
 
+# Install redis-cli for health check
+RUN apk add --no-cache redis
+
+# Copy and set up the wait script
+COPY scripts/wait-for-redis.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/wait-for-redis.sh
+
 # Expose the port the app runs on
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "start"] 
+# Default command (can be overridden by docker-compose)
+CMD ["/usr/local/bin/wait-for-redis.sh", "npm", "run", "start"] 

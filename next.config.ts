@@ -1,7 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  serverExternalPackages: ['redis'],
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals.push('redis');
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

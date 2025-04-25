@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import swapiClient, { SwapiResponse, SwapiMovie } from '@/app/lib/swapi-client';
 import { createLogger } from '@/app/lib/logger';
+import { storeSearchStats } from '@/services/redis';
 
 // Create a logger for this API route
 const logger = createLogger('API:MoviesSearch');
 
 export async function GET(request: NextRequest) {
+  const startTime = Date.now();
+  let searchParams: URLSearchParams | null = null;
+  
   try {
     // Ensure we have a valid URL
     if (!request.url) {
@@ -16,7 +20,6 @@ export async function GET(request: NextRequest) {
     }
 
     // Safely parse the URL and extract search params
-    let searchParams;
     try {
       const url = new URL(request.url);
       searchParams = url.searchParams;
@@ -64,10 +67,28 @@ export async function GET(request: NextRequest) {
     
     logger.debug(`Returning ${movies.length} movies with first item: ${
       movies.length > 0 ? JSON.stringify(movies[0]) : 'No items'}`);
+    
+    // Store search statistics
+    const endTime = Date.now();
+    await storeSearchStats({
+      query,
+      searchType: 'movies',
+      timestamp: startTime,
+      responseTime: endTime - startTime
+    });
         
     return NextResponse.json(movies);
   } catch (error) {
     logger.error('Error in movies API route:', error);
+    
+    // Store failed search statistics
+    const endTime = Date.now();
+    await storeSearchStats({
+      query: searchParams?.get('q') || '',
+      searchType: 'movies',
+      timestamp: startTime,
+      responseTime: endTime - startTime
+    });
     
     // Handle specific error cases
     if (error instanceof Error && error.message.includes('404')) {
