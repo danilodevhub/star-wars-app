@@ -1,10 +1,10 @@
-import ResultsLayout from '@/app/components/ResultsLayout';
-import EmptyState from '../components/EmptyState';
+import ResultsContainer from '@/app/components/ResultsContainer';
+import EmptyState from '@/app/components/EmptyState';
 
 export default function SearchPage() {
   return (
-    <ResultsLayout>
+    <ResultsContainer>
       <EmptyState />
-    </ResultsLayout>
+    </ResultsContainer>
   );
 } 

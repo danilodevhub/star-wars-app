@@ -1,10 +1,10 @@
-import ResultsLayout from '@/app/components/ResultsLayout';
+import ResultsContainer from '@/app/components/ResultsContainer';
 import EmptyState from '@/app/components/EmptyState';
 
 export default function Loading() {
   return (
-    <ResultsLayout>
+    <ResultsContainer>
       <EmptyState message="Searching..." />
-    </ResultsLayout>
+    </ResultsContainer>
   );
 } 

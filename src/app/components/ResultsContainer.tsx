@@ -1,8 +1,8 @@
-interface ResultsLayoutProps {
+interface ResultsContainerProps {
   children: React.ReactNode;
 }
 
-export default function ResultsLayout({ children }: ResultsLayoutProps) {
+export default function ResultsContainer({ children }: ResultsContainerProps) {
   return (
     <div className="w-[582px] h-[582px] bg-[#ffffff] p-[30px] rounded-[4px] shadow-[0_1px_2px_0_var(--warm-grey-75)] border border-[var(--gainsboro)]">
       <div className="h-full flex flex-col">

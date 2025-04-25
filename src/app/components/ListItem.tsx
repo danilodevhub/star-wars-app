@@ -1,20 +1,19 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import SeeDetailsButton from './SeeDetailsButton';
+import SeeDetailsButton from '@/app/components/SeeDetailsButton';
 
 interface ListItemProps {
   text: string;
+  id: number | string;
 }
 
-export default function ListItem({ text }: ListItemProps) {
+export default function ListItem({ text, id }: ListItemProps) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleSeeDetails = () => {
-    // For demo purposes, using the name as the ID
-    const id = text.toLowerCase().replace(/\s+/g, '-');
-    router.push(`${pathname}/${id}`);
+  const handleSeeDetails = () => {    
+      router.push(`${pathname}/${id}`);    
   };
 
   return (

@@ -1,4 +1,5 @@
 export interface Person {
+  uid: string;
   name: string;
   birth_year: string;
   gender: string;
@@ -6,5 +7,5 @@ export interface Person {
   hair_color: string;
   height: string;
   mass: string;
-  films: string[];
+  films: Array<{ uid: string; title: string }>;
 } 

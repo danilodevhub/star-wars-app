@@ -1,8 +1,8 @@
 export interface Movie {
-  id: number;
+  uid: string;
   title: string;
   releaseDate: string;
   director: string;
   opening_crawl: string;
-  characters: string[];
+  characters: Array<{ uid: string; name: string }>;
 } 

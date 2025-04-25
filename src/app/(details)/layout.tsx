@@ -1,11 +1,15 @@
+import ApiErrorBoundary from '@/app/components/ApiErrorBoundary';
+
 export default function DetailsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <main className="container mx-auto px-4 py-8">
-      {children}
-    </main>
+    <div className="flex justify-center w-full px-4">
+      <ApiErrorBoundary>
+        {children}
+      </ApiErrorBoundary>
+    </div>
   );
 } 

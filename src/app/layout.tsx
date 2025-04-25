@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
+import PerformanceMonitorWrapper from '@/app/components/PerformanceMonitorWrapper';
 
 const montserrat = Montserrat({ 
   subsets: ["latin"],
@@ -25,9 +26,11 @@ export default function RootLayout({
             <h1 className="text-white text-2xl font-bold text-center">SWStarter</h1>
           </div>
         </header>
-        <main className="flex justify-center p-30 gap-[30px] min-h-screen">
+        <main className="flex justify-center px-4 gap-[30px] min-h-screen max-w-full overflow-x-hidden">
           {children}
         </main>
+        {/* Performance Monitor - Moved outside of any containers */}
+        <PerformanceMonitorWrapper />
       </body>
     </html>
   );

@@ -1,5 +1,12 @@
-import { fetchMovieDetails } from '@/app/lib/api';
+import { fetchMovieDetails } from '@/app/lib/internalapi-client';
 import BackToSearchButton from '@/app/components/BackToSearchButton';
+import { ApiError } from '@/app/lib/swapi-client';
+import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { createLogger } from '@/app/lib/logger';
+
+// Create a logger for this page
+const logger = createLogger('MovieDetails');
 
 interface PageProps {
   params: Promise<{
@@ -8,38 +15,58 @@ interface PageProps {
 }
 
 export default async function MovieDetailsPage({ params }: PageProps) {
-  const { id } = await params;
-  const movie = await fetchMovieDetails(id);
+  const id = (await params).id;
 
-  return (
-    <div className="max-w-[800px] mx-auto p-[30px] bg-[#ffffff] rounded-[4px] shadow-[0_1px_2px_0_var(--warm-grey-75)] border border-[var(--gainsboro)]">
-      <h1 className="text-[24px] font-[700] mb-[30px]">{movie.title}</h1>
-      
-      <div className="grid grid-cols-2 gap-[30px] mb-[30px]">
-        <div>
-          <h2 className="text-[18px] font-[700] mb-[15px]">Opening Crawl</h2>
-          <div className="space-y-[10px] text-[14px] whitespace-pre-line">
-            {movie.opening_crawl}
+  try {
+    logger.debug(`Loading movie details: ${id}`);
+    
+    const movie = await fetchMovieDetails(id);
+
+    return (
+      <div className="w-[804px] max-h-[537px] mx-auto p-[30px] bg-[#ffffff] rounded-[4px] shadow-[0_1px_2px_0_var(--warm-grey-75)] border border-[var(--gainsboro)] overflow-auto flex flex-col">
+        <h1 className="text-[24px] font-[700] mb-[30px]">{movie.title}</h1>
+        
+        <div className="grid grid-cols-2 gap-[30px] mb-[30px]">
+          <div>
+            <h2 className="text-[18px] font-[700] mb-[15px] border-b border-[var(--gainsboro)] pb-[5px]">Opening Crawl</h2>
+            <p className="text-[14px] whitespace-pre-line leading-relaxed">
+              {movie.opening_crawl}
+            </p>
+          </div>
+          
+          <div>
+            <h2 className="text-[18px] font-[700] mb-[15px] border-b border-[var(--gainsboro)] pb-[5px]">Characters</h2>
+            <div className="space-y-[10px]">
+              {movie.characters.map((character) => (
+                <Link
+                  key={character.uid}
+                  href={`/people/${character.uid}`}
+                  className="block text-[14px] text-[var(--green-teal)] hover:text-[var(--emerald)] transition-colors"
+                >
+                  {character.name}
+                </Link>
+              ))}
+              {movie.characters.length === 0 && (
+                <p className="text-[14px] text-[var(--pinkish-grey)]">No characters found</p>
+              )}
+            </div>
           </div>
         </div>
-        
-        <div>
-          <h2 className="text-[18px] font-[700] mb-[15px]">Characters</h2>
-          <div className="space-y-[10px]">
-            {movie.characters.map((character, index) => (
-              <a
-                key={index}
-                href="#"
-                className="block text-[14px] text-[var(--green-teal)] hover:text-[var(--emerald)] transition-colors"
-              >
-                {character}
-              </a>
-            ))}
-          </div>
+
+        <div className="mt-auto">
+          <BackToSearchButton />
         </div>
       </div>
-
-      <BackToSearchButton />
-    </div>
-  );
+    );
+  } catch (error) {
+    logger.error('Error in MovieDetailsPage:', error);
+    
+    // For 404 errors, use Next.js notFound()
+    if (error instanceof ApiError && error.status === 404) {
+      notFound();
+    }
+    
+    // For all other errors, rethrow to be caught by error boundary
+    throw error;
+  }
 } 

@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense } from 'react';
-import SearchForm from './SearchForm';
+import SearchForm from '@/app/components/SearchForm';
 
 /**
  * SuspendedSearchForm

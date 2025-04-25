@@ -1,7 +1,12 @@
-import { fetchMovies } from '@/app/lib/api';
-import ResultsLayout from '@/app/components/ResultsLayout';
+import { fetchMovies } from '@/app/lib/internalapi-client';
+import ResultsContainer from '@/app/components/ResultsContainer';
 import EmptyState from '@/app/components/EmptyState';
 import ListItem from '@/app/components/ListItem';
+import { Movie } from '@/app/types/movie';
+import { createLogger } from '@/app/lib/logger';
+
+const logger = createLogger('MoviesPage');
+
 interface SearchParams {
   searchParams: Promise<{
     q?: string;
@@ -11,23 +16,41 @@ interface SearchParams {
 export default async function MoviesPage({ searchParams }: SearchParams) {
   const params = await searchParams;
   const query = params?.q || '';
-  const movies = await fetchMovies(query);
   
-  if (movies.length === 0) {
+  // Fetch movies data with error handling
+  let movies: Movie[] = [];
+  try {
+    movies = await fetchMovies(query);
+  } catch (fetchError) {
+    logger.error('Failed to fetch movies', fetchError);
     return (
-      <ResultsLayout>
-        <EmptyState />
-      </ResultsLayout>
+      <ResultsContainer>
+        <EmptyState message="Error loading data. Please try again." />
+      </ResultsContainer>
     );
   }
-
+  
+  // Handle empty results
+  if (movies.length === 0) {
+    return (
+      <ResultsContainer>
+        <EmptyState />
+      </ResultsContainer>
+    );
+  }
+  
+  // Render results
   return (
-    <ResultsLayout>
+    <ResultsContainer>
       <div className="divide-y divide-[var(--gainsboro)]">
         {movies.map((movie) => (
-          <ListItem key={movie.title} text={movie.title} />
+          <ListItem 
+            key={movie.uid} 
+            text={movie.title} 
+            id={movie.uid} 
+          />
         ))}
       </div>
-    </ResultsLayout>
+    </ResultsContainer>
   );
 } 

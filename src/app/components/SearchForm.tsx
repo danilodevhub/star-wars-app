@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useState, useEffect, useTransition } from 'react';
-import SearchButton from './SearchButton';
+import SearchButton from '@/app/components/SearchButton';
 
 export default function SearchForm() {
   const router = useRouter();
@@ -26,20 +26,24 @@ export default function SearchForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!inputText.trim()) return;
+    const trimmedText = inputText.trim();
+    if (!trimmedText) return;
 
+    // Construct the search path
     const path = searchType === 'people' ? '/people' : '/movies';
-    const params = new URLSearchParams();
-    params.set('q', inputText.trim());
-
+    
+    // Safely encode the query parameter
+    const encodedQuery = encodeURIComponent(trimmedText);
+    const url = `${path}?q=${encodedQuery}`;
+        
     startTransition(() => {
-      router.replace(`${path}?${params.toString()}`);
+      router.push(url);
     });
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col w-[400px] h-[230px] bg-[#ffffff] p-[30px] gap-[20px] rounded-[4px] shadow-[0_1px_2px_0_var(--warm-grey-75)] border border-[var(--gainsboro)]">
-      <label className="text-[14px] h-[20px] font-[600] tracking-normal leading-normal text-[#383838]">What are you searching for?</label>
+      <label className="text-[14px] h-[20px] font-bold tracking-normal leading-normal text-[#383838]">What are you searching for?</label>
       
       <div className="flex gap-[30px]">
         <label className="flex items-center">
@@ -49,9 +53,9 @@ export default function SearchForm() {
             value="people" 
             checked={searchType === 'people'}
             onChange={(e) => setSearchType(e.target.value as 'people' | 'movies')}
-            className="mr-[10px]" 
+            className="mr-[1px]" 
           />
-          <span className="text-[14px] font-[700] tracking-normal leading-normal text-black">People</span>
+          <span className="text-[14px] font-bold tracking-normal leading-normal text-black">People</span>
         </label>
         <label className="flex items-center">
           <input 
@@ -60,9 +64,9 @@ export default function SearchForm() {
             value="movies" 
             checked={searchType === 'movies'}
             onChange={(e) => setSearchType(e.target.value as 'people' | 'movies')}
-            className="mr-[10px]" 
+            className="mr-[1px]" 
           />
-          <span className="text-[14px] font-[700] tracking-normal leading-normal text-black">Movies</span>
+          <span className="text-[14px] font-bold tracking-normal leading-normal text-black">Movies</span>
         </label>
       </div>
 
@@ -76,7 +80,7 @@ export default function SearchForm() {
       />
 
       <SearchButton 
-        variant={inputText.trim() ? (isPending ? 'searching' : 'enabled') : 'disabled'} 
+        variant={inputText.trim().length > 1 ? (isPending ? 'searching' : 'enabled') : 'disabled'} 
       />
     </form>
   );

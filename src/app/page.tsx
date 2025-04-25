@@ -1,6 +1,6 @@
-import SuspendedSearchForm from './components/SuspendedSearchForm';
-import ResultsLayout from './components/ResultsLayout';
-import EmptyState from './components/EmptyState';
+import SuspendedSearchForm from '@/app/components/SuspendedSearchForm';
+import ResultsContainer from '@/app/components/ResultsContainer';
+import EmptyState from '@/app/components/EmptyState';
 
 export default function Home() {  
   return (
@@ -9,9 +9,9 @@ export default function Home() {
       <SuspendedSearchForm />
 
       {/* Right Container - Empty State */}
-      <ResultsLayout>
+      <ResultsContainer>
         <EmptyState />
-      </ResultsLayout>
+      </ResultsContainer>
     </>
   );
 }

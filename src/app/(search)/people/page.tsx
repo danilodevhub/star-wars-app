@@ -1,14 +1,10 @@
-import { fetchPeople } from '@/app/lib/api';
-import ResultsLayout from '@/app/components/ResultsLayout';
+import { fetchPeople } from '@/app/lib/internalapi-client';
+import ResultsContainer from '@/app/components/ResultsContainer';
 import EmptyState from '@/app/components/EmptyState';
 import ListItem from '@/app/components/ListItem';
-
-interface Person {
-  name: string;
-  height: string;
-  mass: string;
-  gender: string;
-}
+import { Person } from '@/app/types/person';
+import { createLogger } from '@/app/lib/logger';
+const logger = createLogger('PeoplePage');
 
 interface SearchParams {
   searchParams: Promise<{
@@ -19,23 +15,41 @@ interface SearchParams {
 export default async function PeoplePage({ searchParams }: SearchParams) {
   const params = await searchParams;
   const query = params?.q || '';
-  const people = await fetchPeople(query) as Person[];
   
-  if (people.length === 0) {
+  // Fetch people data with error handling
+  let people: Person[] = [];
+  try {
+    people = await fetchPeople(query);
+  } catch (fetchError) {
+    logger.error('Failed to fetch people', fetchError);
     return (
-      <ResultsLayout>
-        <EmptyState />
-      </ResultsLayout>
+      <ResultsContainer>
+        <EmptyState message="Error loading data. Please try again." />
+      </ResultsContainer>
     );
   }
-
+  
+  // Handle empty results
+  if (people.length === 0) {
+    return (
+      <ResultsContainer>
+        <EmptyState />
+      </ResultsContainer>
+    );
+  }
+  
+  // Render results
   return (
-    <ResultsLayout>
-      <div className="divide-y divide-[var(--gainsboro)]">
+    <ResultsContainer>      
+        <div className="divide-y divide-[var(--gainsboro)]">
         {people.map((person) => (
-          <ListItem key={person.name} text={person.name} />
+          <ListItem 
+            key={person.uid} 
+            text={person.name} 
+            id={person.uid} 
+          />
         ))}
-      </div>
-    </ResultsLayout>
+      </div>      
+    </ResultsContainer>
   );
 } 
