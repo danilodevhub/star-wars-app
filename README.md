@@ -44,7 +44,7 @@ npm install
 yarn install
 ```
 
-3. Start the development server:
+3. Start the development server _(not recommended since it depends on Redis, see Docker deployment)_:
 ```bash
 npm run dev
 # or
@@ -60,12 +60,9 @@ The application will be available at [http://localhost:3000](http://localhost:30
 docker-compose up --build
 ```
 
-2. For production deployment:
-```bash
-docker-compose -f docker-compose.yml up --build
-```
+The application will be available at [http://localhost:3000](http://localhost:3000)
 
-3. Get Redis Records:
+2. Get Redis Records:
 
 Usefull for troubleshooting the statistics
 
@@ -88,6 +85,10 @@ The application will be available at [http://localhost:3000](http://localhost:30
 ## Environment Configuration
 
 The project uses environment variables for configuration. Create a `.env.local` file for local development or use the provided `.env.production` for production deployment.
+
+## Issues
+
+- [ ] List of films within person resource is not returning from SWAPI API
 
 ## Pending work
 
