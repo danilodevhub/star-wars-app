@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Star Wars App
+
+A modern web application built with Next.js that provides information about the Star Wars universe. This project showcases the use of modern web technologies and best practices in web development.
+
+## Features
+
+- Modern, responsive UI built with React and Tailwind CSS
+- Server-side rendering with Next.js
+- Type-safe development with TypeScript
+- Optimized performance with Turbopack
+- Docker support for easy deployment
+- Environment configuration for different deployment stages
+
+## Technologies & Patterns
+
+- **Frontend Framework**: Next.js 15.3.1 with React 19
+- **Styling**: Tailwind CSS 4
+- **Type Safety**: TypeScript
+- **Build Tool**: Turbopack
+- **Code Quality**: ESLint
+- **Containerization**: Docker
+- **Architecture**: Server-side rendering (SSR), Component-based architecture
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js (LTS version recommended)
+- Docker and Docker Compose (for containerized deployment)
+- npm or yarn package manager
+
+### Local Development
+
+1. Clone the repository:
+```bash
+git clone https://github.com/danilodevhub/star-wars-app.git
+cd star-wars-app
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Start the development server:
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Docker Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Build and run using Docker Compose:
+```bash
+docker-compose up --build
+```
 
-## Learn More
+2. For production deployment:
+```bash
+docker-compose -f docker-compose.yml up --build
+```
 
-To learn more about Next.js, take a look at the following resources:
+The application will be available at [http://localhost:3000](http://localhost:3000)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment Configuration
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The project uses environment variables for configuration. Create a `.env.local` file for local development or use the provided `.env.production` for production deployment.
 
-## Deploy on Vercel
+## Future Improvements
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [ ] Add authentication system
+- [ ] Implement caching for API responses
+- [ ] Add unit and integration tests
+- [ ] Implement CI/CD pipeline
+- [ ] Add more interactive features
+- [ ] Implement offline support with PWA
+- [ ] Add dark mode support
+- [ ] Implement internationalization (i18n)
+- [ ] Add more detailed character and planet information
+- [ ] Implement search functionality
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
