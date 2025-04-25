@@ -36,18 +36,23 @@ export default async function MovieDetailsPage({ params }: PageProps) {
           
           <div>
             <h2 className="text-[18px] font-[700] mb-[15px] border-b border-[var(--gainsboro)] pb-[5px]">Characters</h2>
-            <div className="space-y-[10px]">
-              {movie.characters.map((character) => (
-                <Link
-                  key={character.uid}
-                  href={`/people/${character.uid}`}
-                  className="block text-[14px] text-[var(--green-teal)] hover:text-[var(--emerald)] transition-colors"
-                >
-                  {character.name}
-                </Link>
-              ))}
-              {movie.characters.length === 0 && (
-                <p className="text-[14px] text-[var(--pinkish-grey)]">No characters found</p>
+            <div className="text-[14px]">
+              {movie.characters.length > 0 ? (
+                <div className="flex flex-wrap gap-1">
+                  {movie.characters.map((character, index) => (
+                    <span key={character.uid}>
+                      <Link
+                        href={`/people/${character.uid}`}
+                        className="text-[var(--green-teal)] hover:text-[var(--emerald)] transition-colors"
+                      >
+                        {character.name}
+                      </Link>
+                      {index < movie.characters.length - 1 && <span>,&nbsp;</span>}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[var(--pinkish-grey)]">No characters found</p>
               )}
             </div>
           </div>

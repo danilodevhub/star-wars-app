@@ -75,7 +75,9 @@ export default function SearchForm() {
         name="searchText"
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
-        placeholder="e.g. Chewbacca, Yoda, Boba Fett"
+        placeholder={searchType === 'people' 
+          ? "e.g. Chewbacca, Yoda, Boba Fett"
+          : "e.g. A New Hope, Empire Strikes Back, Return of the Jedi"}
         className="h-[40px] min-h-[40px] px-[10px] rounded-[4px] shadow-[inset_0_1px_3px_0_var(--warm-grey-75)] border border-[var(--pinkish-grey)] bg-white text-[14px] font-[700] tracking-normal leading-normal focus:border-[#383838] focus:outline-none focus:shadow-[inset_0_1px_3px_0_var(--warm-grey-75)] placeholder:text-[var(--pinkish-grey)]"
       />
 
