@@ -140,7 +140,6 @@ The project uses environment variables for configuration. Create a `.env.local` 
 - [ ] Implement caching for API responses
 - [ ] Add unit and integration tests
 - [ ] Implement pagination
-- [ ] It should be production ready (fix Redis issues for prod env)
 
 ## Contributing
 
