@@ -110,13 +110,16 @@ Useful for troubleshooting the statistics
 docker exec star-wars-app-redis-1 redis-cli KEYS "*"
 
 # Get a specific key
-docker exec star-wars-app-redis-1 redis-cli HGETALL "search:*"
+docker exec star-wars-app-redis-1 redis-cli HGETALL "search:<<timestamp>>"
 
 # Get top queries
 docker exec star-wars-app-redis-1 redis-cli ZRANGE search:queries 0 -1 WITHSCORES
 
 # Get hourly stats
 docker exec star-wars-app-redis-1 redis-cli ZRANGE search:hourly 0 -1 WITHSCORES
+
+# Delete all keys 
+docker exec star-wars-app-redis-1 redis-cli FLUSHDB
 ```
 
 The application will be available at [http://localhost:3000](http://localhost:3000)

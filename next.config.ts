@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
     return config;
   },
   output: 'standalone',
+  turbopack: {
+    resolveAlias: {
+      // Add any path aliases if needed
+    },
+    resolveExtensions: ['.tsx', '.ts', '.jsx', '.js', '.json']
+  }
 };
 
 export default nextConfig;

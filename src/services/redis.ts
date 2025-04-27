@@ -39,6 +39,7 @@ const getRedisClient = () => {
 };
 
 // Health Check
+// TODO: Remove this function
 export const checkRedisHealth = async () => {
   try {
     const client = getRedisClient();
