@@ -1,28 +1,48 @@
-# Use Node.js LTS version
-FROM node:20-alpine
+# Build stage
+FROM node:23-alpine AS builder
 
 # Set working directory
 WORKDIR /app
 
-# Install dependencies first (caching layer)
+# Copy package files
 COPY package*.json ./
+
+# Install dependencies
 RUN npm ci
 
-# Copy the rest of the application
+# Copy source code
 COPY . .
 
 # Build the application
 RUN npm run build
 
-# Install redis-cli for health check
-RUN apk add --no-cache redis
+# Production stage
+FROM node:23-alpine AS runner
 
-# Copy and set up the wait script
-COPY scripts/wait-for-redis.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/wait-for-redis.sh
+# Set working directory
+WORKDIR /app
 
-# Expose the port the app runs on
+# Create a non-root user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Copy necessary files from builder
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+# Set proper permissions
+RUN chown -R nextjs:nodejs /app
+
+# Switch to non-root user
+USER nextjs
+
+# Expose the port
 EXPOSE 3000
 
-# Default command (can be overridden by docker-compose)
-CMD ["/usr/local/bin/wait-for-redis.sh", "npm", "run", "start"] 
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Start the application
+CMD ["node", "server.js"] 

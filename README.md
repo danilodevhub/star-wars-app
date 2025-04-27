@@ -55,7 +55,46 @@ The application will be available at [http://localhost:3000](http://localhost:30
 
 ### Docker Deployment
 
-1. Build and run using Docker Compose:
+#### Development Environment
+
+1. Build and run the development environment:
+```bash
+docker-compose -f docker-compose.dev.yml up --build
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000)
+
+#### Production Environment
+
+You can set up the required environment variables in one of the following ways:
+
+1. **Using .env.production file** (recommended):
+   Create a `.env.production` file in the root directory with:
+   ```bash
+   NEXT_PUBLIC_API_BASE_URL=http://host.docker.internal:3000
+   SWAPI_BASE_URL=https://swapi.tech/api
+   ```
+
+2. **Using command line arguments**:
+   ```bash
+   NEXT_PUBLIC_API_BASE_URL=http://host.docker.internal:3000 SWAPI_BASE_URL=https://swapi.tech/api docker-compose -f docker-compose.prod.yml up --build
+   ```
+
+3. **Using shell profile** (e.g., `.zprofile`, `.bash_profile`):
+   Add these lines to your shell profile:
+   ```bash
+   export NEXT_PUBLIC_API_BASE_URL=http://host.docker.internal:3000
+   export SWAPI_BASE_URL=https://swapi.tech/api
+   ```
+   Then source your profile or restart your terminal.
+
+4. **Using Docker environment file**:
+   Create a `docker.env` file and use it with:
+   ```bash
+   docker-compose --env-file docker.env up --build
+   ```
+
+After setting up the environment variables using any of the methods above, build and run the production environment:
 ```bash
 docker-compose up --build
 ```
@@ -64,7 +103,7 @@ The application will be available at [http://localhost:3000](http://localhost:30
 
 2. Get Redis Records:
 
-Usefull for troubleshooting the statistics
+Useful for troubleshooting the statistics
 
 ```bash
 # Get all keys
