@@ -40,24 +40,53 @@ async function collectAndPublishSearchStats() {
     }));
 
     // Publish to Kafka
-    await producer.connect();    
-    await producer.send({
-      topic: 'computable-searches',
-      messages: searchStats.map(stat => ({
-        key: stat.searchType, // partition by searchType
-        value: JSON.stringify(stat)
-      }))
-    });
-    //last message for each partition that indicates the end of the records to be computed
+    await producer.connect();
     const searchTypes = [...new Set(searchStats.map(stat => stat.searchType))];
-    const partitions = Array.from({length: searchTypes.length}, (_, i) => i);
-    for (const partition of partitions) {
+    const searchTypeToPartition = new Map(searchTypes.map((type, index) => [type, index]));
+    
+    // Send BOF messages
+    for (const [searchType, partition] of searchTypeToPartition) {
+      console.log(`Sending BOF message for partition ${partition}, searchType: ${searchType}`);
+      await producer.send({
+        topic: 'computable-searches',
+        messages: [
+          {
+            key: 'BOF',
+            value: searchType,
+            partition,
+          },
+        ],
+      });
+    }
+
+    // Send data messages
+    for (const stat of searchStats) {
+      const partition = searchTypeToPartition.get(stat.searchType);
+      if (partition === undefined) {
+        console.warn(`Unknown searchType: ${stat.searchType}`);
+        continue;
+      }
+      await producer.send({
+        topic: 'computable-searches',
+        messages: [
+          {
+            key: stat.searchType,
+            value: JSON.stringify(stat),
+            partition,
+          },
+        ],
+      });
+    }
+
+    // Send EOF messages
+    for (const [searchType, partition] of searchTypeToPartition) {
+      console.log(`Sending EOF message for partition ${partition}, searchType: ${searchType}`);
       await producer.send({
         topic: 'computable-searches',
         messages: [
           {
             key: 'EOF',
-            value: JSON.stringify({ type: 'EOF' }),
+            value: searchType,
             partition,
           },
         ],
@@ -75,6 +104,6 @@ async function collectAndPublishSearchStats() {
 // Run every 5 minutes
 //setInterval(collectAndPublishSearchStats, 5 * 60 * 1000);
 setInterval(collectAndPublishSearchStats, 1 * 60 * 1000);
-
-// Initial run
+    
+    // Initial run
 collectAndPublishSearchStats(); 
