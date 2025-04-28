@@ -1,0 +1,29 @@
+# Development stage
+FROM node:23-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies for development
+RUN apk add --no-cache \
+    git \
+    openssh-client
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Expose the port
+EXPOSE 3000
+
+# Set environment variables
+ENV NODE_ENV=development
+ENV PORT=3000
+
+# Start the application in development mode
+CMD ["npm", "run", "dev"] 

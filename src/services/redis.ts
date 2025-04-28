@@ -38,21 +38,6 @@ const getRedisClient = () => {
   return redisClient;
 };
 
-// Health Check
-export const checkRedisHealth = async () => {
-  try {
-    const client = getRedisClient();
-    if (!client.isOpen) {
-      await client.connect();
-    }
-    await client.ping();
-    return true;
-  } catch (error) {
-    console.error('Redis health check failed:', error);
-    return false;
-  }
-};
-
 // Key Operations
 export const getKeys = async (pattern: string = '*') => {
   try {
@@ -203,6 +188,50 @@ export const getAllHashFields = async (key: string) => {
     return await client.hGetAll(key);
   } catch (error) {
     console.error('Error getting all hash fields:', error);
+    return null;
+  }
+};
+
+// Get top queries by search type
+export const getTopQueriesBySearchType = async (searchType: string) => {
+  try {
+    const client = getRedisClient();
+    if (!client.isOpen) {
+      await client.connect();
+    }
+    
+    const key = `stats:${searchType}:top-queries`;
+    const data = await client.get(key);
+    
+    if (!data) {
+      return null;
+    }
+    
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error getting top queries by search type:', error);
+    return null;
+  }
+};
+
+// Get popular hour statistics
+export const getPopularHourStats = async () => {
+  try {
+    const client = getRedisClient();
+    if (!client.isOpen) {
+      await client.connect();
+    }
+    
+    const key = 'stats:popular-hour';
+    const data = await client.get(key);
+    
+    if (!data) {
+      return null;
+    }
+    
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error getting popular hour stats:', error);
     return null;
   }
 }; 

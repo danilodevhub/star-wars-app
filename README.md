@@ -10,6 +10,8 @@ A modern web application built with Next.js that provides information about the 
 - Optimized performance with Turbopack
 - Docker support for easy deployment
 - Environment configuration for different deployment stages
+- Search statistics tracking with Redis
+- API endpoints for retrieving search statistics
 
 ## Technologies & Patterns
 
@@ -55,29 +57,68 @@ The application will be available at [http://localhost:3000](http://localhost:30
 
 ### Docker Deployment
 
-1. Build and run using Docker Compose:
+#### Development Environment
+
+1. Build and run the development environment:
+```bash
+docker-compose -f docker-compose.dev.yml up --build
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000)
+
+#### Production Environment
+
+You can set up the required environment variables in one of the following ways:
+
+1. **Using .env.production file** (recommended):
+   Create a `.env.production` file in the root directory with:
+   ```bash
+   NEXT_PUBLIC_API_BASE_URL=http://host.docker.internal:3000
+   SWAPI_BASE_URL=https://swapi.tech/api
+   ```
+
+2. **Using command line arguments**:
+   ```bash
+   NEXT_PUBLIC_API_BASE_URL=http://host.docker.internal:3000 SWAPI_BASE_URL=https://swapi.tech/api docker-compose -f docker-compose.prod.yml up --build
+   ```
+
+3. **Using shell profile** (e.g., `.zprofile`, `.bash_profile`):
+   Add these lines to your shell profile:
+   ```bash
+   export NEXT_PUBLIC_API_BASE_URL=http://host.docker.internal:3000
+   export SWAPI_BASE_URL=https://swapi.tech/api
+   ```
+   Then source your profile or restart your terminal.
+
+4. **Using Docker environment file**:
+   Create a `docker.env` file and use it with:
+   ```bash
+   docker-compose --env-file docker.env up --build
+   ```
+
+After setting up the environment variables using any of the methods above, build and run the production environment:
 ```bash
 docker-compose up --build
+
+# for scaling one consumer per partition 
+docker-compose up --build --scale search-stats-consumer-top-queries=2
 ```
 
 The application will be available at [http://localhost:3000](http://localhost:3000)
 
 2. Get Redis Records:
 
-Usefull for troubleshooting the statistics
+Useful for troubleshooting the statistics
 
 ```bash
 # Get all keys
 docker exec star-wars-app-redis-1 redis-cli KEYS "*"
 
 # Get a specific key
-docker exec star-wars-app-redis-1 redis-cli HGETALL "search:*"
+docker exec star-wars-app-redis-1 redis-cli HGETALL "search:<<timestamp>>"
 
-# Get top queries
-docker exec star-wars-app-redis-1 redis-cli ZRANGE search:queries 0 -1 WITHSCORES
-
-# Get hourly stats
-docker exec star-wars-app-redis-1 redis-cli ZRANGE search:hourly 0 -1 WITHSCORES
+# Delete all keys 
+docker exec star-wars-app-redis-1 redis-cli FLUSHDB
 ```
 
 The application will be available at [http://localhost:3000](http://localhost:3000)
@@ -90,18 +131,12 @@ The project uses environment variables for configuration. Create a `.env.local` 
 
 - [ ] List of films within person resource is not returning from SWAPI API
 
-## Pending work
-
-- [ ] Implement event-driven approach to compute statistics
-- [ ] Implement the endpoint to return the statistics
-
 ## Future Improvements
 
 - [ ] Add authentication system
 - [ ] Implement caching for API responses
 - [ ] Add unit and integration tests
 - [ ] Implement pagination
-- [ ] It should be production ready (fix Redis issues for prod env)
 
 ## Contributing
 
@@ -110,3 +145,94 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## API Endpoints
+
+### Search Statistics
+
+Get search statistics for both people and movies:
+
+```bash
+GET /api/v1/stats
+```
+
+Response example:
+```json
+{
+  "queries": [
+    {
+      "searchType": "people",
+      "totalQueries": 14,
+      "topFive": [
+        {
+          "query": "teste",
+          "count": 7,
+          "percentage": "50.00%"
+        },
+        {
+          "query": "dart",
+          "count": 4,
+          "percentage": "28.57%"
+        },
+        {
+          "query": "maul",
+          "count": 1,
+          "percentage": "7.14%"
+        },
+        {
+          "query": "rd",
+          "count": 1,
+          "percentage": "7.14%"
+        },
+        {
+          "query": "yoda",
+          "count": 1,
+          "percentage": "7.14%"
+        }
+      ],
+      "timestamp": "2025-04-28T08:21:07.114Z",
+      "avgResponseTimeMs": 126.14
+    },
+    {
+      "searchType": "movies",
+      "totalQueries": 7,
+      "topFive": [
+        {
+          "query": "hope",
+          "count": 3,
+          "percentage": "42.86%"
+        },
+        {
+          "query": "jedi",
+          "count": 1,
+          "percentage": "14.29%"
+        },
+        {
+          "query": "the",
+          "count": 1,
+          "percentage": "14.29%"
+        },
+        {
+          "query": "a new hope",
+          "count": 1,
+          "percentage": "14.29%"
+        },
+        {
+          "query": "return",
+          "count": 1,
+          "percentage": "14.29%"
+        }
+      ],
+      "timestamp": "2025-04-28T08:21:07.093Z",
+      "avgResponseTimeMs": 283.57
+    }
+  ],
+  "mostPopularSearchHour": {
+    "hour": 6,
+    "period": "AM",
+    "count": 14,
+    "percentage": "66.67%",
+    "timestamp": "2025-04-28T08:21:07.114Z"
+  }
+}
+```
