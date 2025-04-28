@@ -38,22 +38,6 @@ const getRedisClient = () => {
   return redisClient;
 };
 
-// Health Check
-// TODO: Remove this function
-export const checkRedisHealth = async () => {
-  try {
-    const client = getRedisClient();
-    if (!client.isOpen) {
-      await client.connect();
-    }
-    await client.ping();
-    return true;
-  } catch (error) {
-    console.error('Redis health check failed:', error);
-    return false;
-  }
-};
-
 // Key Operations
 export const getKeys = async (pattern: string = '*') => {
   try {

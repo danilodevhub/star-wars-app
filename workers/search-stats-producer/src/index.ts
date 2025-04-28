@@ -102,8 +102,7 @@ async function collectAndPublishSearchStats() {
 }
 
 // Run every 5 minutes
-//setInterval(collectAndPublishSearchStats, 5 * 60 * 1000);
-setInterval(collectAndPublishSearchStats, 1 * 60 * 1000);
+setInterval(collectAndPublishSearchStats, 5 * 60 * 1000);
     
     // Initial run
 collectAndPublishSearchStats(); 
