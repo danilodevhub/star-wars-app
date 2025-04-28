@@ -13,13 +13,14 @@ interface SearchStats {
 }
 
 interface TopQueriesResult {
-  total: number;
+  totalQueries: number;
   topFive: Array<{
     query: string;
     count: number;
     percentage: string;
   }>;
   timestamp: string;
+  avgResponseTimeMs: number;
 }
 
 // Redis configuration
@@ -51,8 +52,13 @@ const consumer = kafka.consumer({
 async function processMessage(searchType: string, value: SearchStats): Promise<void> {
   // Sanitize query by converting to lowercase
   const sanitizedQuery = value.query.toLowerCase();
+  
   // Increment the count for the sanitized query in a Redis hash
   await redis.hincrby(`stats:${searchType}:counts`, sanitizedQuery, 1);
+  
+  // Track response time
+  await redis.hincrby(`stats:${searchType}:totalResponseTime`, sanitizedQuery, value.responseTime);
+  
   console.log(`Processed query "${sanitizedQuery}" for searchType "${searchType}"`);
 }
 
@@ -60,16 +66,23 @@ async function processMessage(searchType: string, value: SearchStats): Promise<v
 async function computeAndStoreTopFive(searchType: string): Promise<void> {
   // Get all counts from Redis hash
   const counts = await redis.hgetall(`stats:${searchType}:counts`);
+  const totalResponseTimes = await redis.hgetall(`stats:${searchType}:totalResponseTime`);
   
   // Calculate total count
-  const total = Object.values(counts)
+  const totalQueries = Object.values(counts)
     .map(v => parseInt(v as string))
     .reduce((sum, v) => sum + v, 0);
   
-  if (total === 0) {
+  if (totalQueries === 0) {
     console.log(`No queries found for searchType "${searchType}"`);
     return;
   }
+
+  // Calculate average response time
+  const totalResponseTime = Object.values(totalResponseTimes)
+    .map(v => parseInt(v as string))
+    .reduce((sum, v) => sum + v, 0);
+  const avgResponseTimeMs = Number((totalResponseTime / totalQueries).toFixed(2));
 
   // Sort and get top 5
   const topFive = Object.entries(counts)
@@ -78,14 +91,15 @@ async function computeAndStoreTopFive(searchType: string): Promise<void> {
     .map(([query, count]) => ({
       query,
       count: parseInt(count as string),
-      percentage: ((parseInt(count as string) / total) * 100).toFixed(2) + '%'
+      percentage: ((parseInt(count as string) / totalQueries) * 100).toFixed(2) + '%'
     }));
 
   // Store result in Redis
   const result: TopQueriesResult = {
-    total,
+    totalQueries,
     topFive,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    avgResponseTimeMs
   };
   
   await redis.set(`stats:${searchType}:top-queries`, JSON.stringify(result));
@@ -96,6 +110,7 @@ async function computeAndStoreTopFive(searchType: string): Promise<void> {
 async function clearState(searchType: string): Promise<void> {
   await redis.del(`stats:${searchType}:counts`);
   await redis.del(`stats:${searchType}:top-queries`);
+  await redis.del(`stats:${searchType}:totalResponseTime`);
   console.log(`Cleared state for searchType "${searchType}"`);
 }
 
