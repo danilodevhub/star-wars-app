@@ -13,6 +13,11 @@ RUN npm ci
 # Copy source code
 COPY . .
 
+# Install worker dependencies
+RUN cd workers/search-stats-producer && npm install
+RUN cd workers/search-stats-consumer-top-queries && npm install
+RUN cd workers/search-stats-consumer-popular-hour && npm install
+
 # Build the application
 RUN npm run build
 

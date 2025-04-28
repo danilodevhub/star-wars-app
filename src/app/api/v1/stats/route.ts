@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createLogger } from '@/app/lib/logger';
-import { getTopQueriesBySearchType } from '@/services/redis';
+import { getTopQueriesBySearchType, getPopularHourStats } from '@/services/redis';
 
 // Create a logger for this API route
 const logger = createLogger('API:Stats');
@@ -9,10 +9,11 @@ export async function GET() {
   try {
     logger.debug('GET /api/v1/stats');
     
-    // Get stats for both search types
-    const [peopleStats, moviesStats] = await Promise.all([
+    // Get stats for both search types and popular hour
+    const [peopleStats, moviesStats, popularHourStats] = await Promise.all([
       getTopQueriesBySearchType('people'),
-      getTopQueriesBySearchType('movies')
+      getTopQueriesBySearchType('movies'),
+      getPopularHourStats()
     ]);
     
     const queries = [];
@@ -38,9 +39,14 @@ export async function GET() {
       );
     }
     
-    logger.debug(`Returning stats: ${JSON.stringify(queries)}`);
+    const response = {
+      queries,
+      ...(popularHourStats && { mostPopularSearchHour: popularHourStats })
+    };
     
-    return NextResponse.json({ queries });
+    logger.debug(`Returning stats: ${JSON.stringify(response)}`);
+    
+    return NextResponse.json(response);
   } catch (error) {
     logger.error('Error in stats API route:', error);
     

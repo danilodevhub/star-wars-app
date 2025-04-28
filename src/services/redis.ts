@@ -228,4 +228,26 @@ export const getTopQueriesBySearchType = async (searchType: string) => {
     console.error('Error getting top queries by search type:', error);
     return null;
   }
+};
+
+// Get popular hour statistics
+export const getPopularHourStats = async () => {
+  try {
+    const client = getRedisClient();
+    if (!client.isOpen) {
+      await client.connect();
+    }
+    
+    const key = 'stats:popular-hour';
+    const data = await client.get(key);
+    
+    if (!data) {
+      return null;
+    }
+    
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error getting popular hour stats:', error);
+    return null;
+  }
 }; 

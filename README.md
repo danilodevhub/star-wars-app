@@ -167,24 +167,40 @@ Response example:
   "queries": [
     {
       "searchType": "people",
-      "total": 7,
+      "totalQueries": 14,
       "topFive": [
+        {
+          "query": "teste",
+          "count": 7,
+          "percentage": "50.00%"
+        },
         {
           "query": "dart",
           "count": 4,
-          "percentage": "57.14%"
+          "percentage": "28.57%"
         },
         {
           "query": "maul",
           "count": 1,
-          "percentage": "14.29%"
+          "percentage": "7.14%"
+        },
+        {
+          "query": "rd",
+          "count": 1,
+          "percentage": "7.14%"
+        },
+        {
+          "query": "yoda",
+          "count": 1,
+          "percentage": "7.14%"
         }
       ],
-      "timestamp": "2025-04-28T06:53:41.302Z"
+      "timestamp": "2025-04-28T08:21:07.114Z",
+      "avgResponseTimeMs": 126.14
     },
     {
       "searchType": "movies",
-      "total": 7,
+      "totalQueries": 7,
       "topFive": [
         {
           "query": "hope",
@@ -192,13 +208,36 @@ Response example:
           "percentage": "42.86%"
         },
         {
+          "query": "jedi",
+          "count": 1,
+          "percentage": "14.29%"
+        },
+        {
+          "query": "the",
+          "count": 1,
+          "percentage": "14.29%"
+        },
+        {
+          "query": "a new hope",
+          "count": 1,
+          "percentage": "14.29%"
+        },
+        {
           "query": "return",
           "count": 1,
           "percentage": "14.29%"
         }
       ],
-      "timestamp": "2025-04-28T06:55:32.859Z"
+      "timestamp": "2025-04-28T08:21:07.093Z",
+      "avgResponseTimeMs": 283.57
     }
-  ]
+  ],
+  "mostPopularSearchHour": {
+    "hour": 6,
+    "period": "AM",
+    "count": 14,
+    "percentage": "66.67%",
+    "timestamp": "2025-04-28T08:21:07.114Z"
+  }
 }
 ```
