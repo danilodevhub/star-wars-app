@@ -10,6 +10,8 @@ A modern web application built with Next.js that provides information about the 
 - Optimized performance with Turbopack
 - Docker support for easy deployment
 - Environment configuration for different deployment stages
+- Search statistics tracking with Redis
+- API endpoints for retrieving search statistics
 
 ## Technologies & Patterns
 
@@ -148,3 +150,55 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## API Endpoints
+
+### Search Statistics
+
+Get search statistics for both people and movies:
+
+```bash
+GET /api/v1/stats
+```
+
+Response example:
+```json
+{
+  "queries": [
+    {
+      "searchType": "people",
+      "total": 7,
+      "topFive": [
+        {
+          "query": "dart",
+          "count": 4,
+          "percentage": "57.14%"
+        },
+        {
+          "query": "maul",
+          "count": 1,
+          "percentage": "14.29%"
+        }
+      ],
+      "timestamp": "2025-04-28T06:53:41.302Z"
+    },
+    {
+      "searchType": "movies",
+      "total": 7,
+      "topFive": [
+        {
+          "query": "hope",
+          "count": 3,
+          "percentage": "42.86%"
+        },
+        {
+          "query": "return",
+          "count": 1,
+          "percentage": "14.29%"
+        }
+      ],
+      "timestamp": "2025-04-28T06:55:32.859Z"
+    }
+  ]
+}
+```
