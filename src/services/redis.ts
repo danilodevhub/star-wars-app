@@ -206,4 +206,26 @@ export const getAllHashFields = async (key: string) => {
     console.error('Error getting all hash fields:', error);
     return null;
   }
+};
+
+// Get top queries by search type
+export const getTopQueriesBySearchType = async (searchType: string) => {
+  try {
+    const client = getRedisClient();
+    if (!client.isOpen) {
+      await client.connect();
+    }
+    
+    const key = `stats:${searchType}:top-queries`;
+    const data = await client.get(key);
+    
+    if (!data) {
+      return null;
+    }
+    
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error getting top queries by search type:', error);
+    return null;
+  }
 }; 

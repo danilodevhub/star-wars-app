@@ -97,6 +97,9 @@ You can set up the required environment variables in one of the following ways:
 After setting up the environment variables using any of the methods above, build and run the production environment:
 ```bash
 docker-compose up --build
+
+# for scaling one consumer per partition 
+docker-compose up --build --scale search-stats-consumer-top-queries=2
 ```
 
 The application will be available at [http://localhost:3000](http://localhost:3000)
