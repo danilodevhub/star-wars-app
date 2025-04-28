@@ -131,11 +131,6 @@ The project uses environment variables for configuration. Create a `.env.local` 
 
 - [ ] List of films within person resource is not returning from SWAPI API
 
-## Pending work
-
-- [ ] Implement event-driven approach to compute statistics
-- [ ] Implement the endpoint to return the statistics
-
 ## Future Improvements
 
 - [ ] Add authentication system
